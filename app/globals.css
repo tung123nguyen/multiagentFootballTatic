@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+@theme {
+  /* ---- Surfaces ---- */
+  --color-bg: #080b11;
+  --color-bg-2: #0c1118;
+  --color-foreground: #eef2f8;
+  --color-muted: #94a2b8;
+  --color-faint: #5d6b80;
+
+  /* Glass tokens (translucent, used with backdrop-blur) */
+  --color-glass: rgba(255, 255, 255, 0.045);
+  --color-glass-2: rgba(255, 255, 255, 0.08);
+  --color-line: rgba(255, 255, 255, 0.1);
+  --color-line-2: rgba(255, 255, 255, 0.16);
+
+  /* ---- Brand / accents ---- */
+  --color-primary: #34d399;
+  --color-primary-strong: #10b981;
+  --color-primary-foreground: #042016;
+  --color-accent: #60a5fa;
+
+  /* ---- Tokens on the pitch ---- */
+  --color-home: #3b82f6;
+  --color-away: #f43f5e;
+  --color-ball: #fbbf24;
+  --color-aim: #fbbf24;
+
+  /* ---- Pitch greens ---- */
+  --color-pitch-1: #1f9d57;
+  --color-pitch-2: #1b9150;
+
+  /* ---- Radii ---- */
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 22px;
+
+  /* ---- Fonts ---- */
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  /* ---- Shadows ---- */
+  --shadow-glass: 0 8px 30px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --shadow-float: 0 12px 40px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 0 1px rgba(52, 211, 153, 0.5), 0 8px 24px rgba(16, 185, 129, 0.25);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--color-foreground);
+  background: var(--color-bg);
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Thin, modern scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-2) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-line-2);
+  border-radius: 999px;
+}
+
+input[type="range"] {
+  accent-color: var(--color-primary);
+}
+
+/* ---------- Reusable glass surfaces ---------- */
+.glass {
+  background: var(--color-glass);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-glass);
+}
+.glass-2 {
+  background: var(--color-glass-2);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid var(--color-line-2);
+  box-shadow: var(--shadow-float);
+}
+
+/* ---------- Animations ---------- */
+@keyframes dashmove {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+.animate-dash {
+  animation: dashmove 0.8s linear infinite;
+}
+
+@keyframes anchorPing {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+.animate-anchorping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: anchorPing 1.1s ease-out infinite;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-pop {
+  animation: popIn 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-slide-right {
+  animation: slideInRight 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Tooltip (CSS-only, group based) ---------- */
+.tip {
+  position: relative;
+}
+.tip > .tip-label {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(6px) scale(0.96);
+  transition: opacity 0.14s ease, transform 0.14s ease;
+  white-space: nowrap;
+  z-index: 50;
+}
+.tip:hover > .tip-label {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
