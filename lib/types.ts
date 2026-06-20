@@ -24,6 +24,8 @@ export interface Arrow {
   points: { x: number; y: number }[];
   /** Player id this arrow's start point is attached to (run/pass lines). */
   anchorId?: string;
+  /** Playback phase: lines sharing a step run simultaneously (run/pass only). */
+  step?: number;
 }
 
 export interface Ball {

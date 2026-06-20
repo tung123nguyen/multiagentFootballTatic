@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, X } from "lucide-react";
+import { Minus, Plus, Trash2, X } from "lucide-react";
 import { ARROW_COLORS, ARROW_WIDTHS, useBoard } from "@/lib/store";
 import type { ArrowKind } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -29,7 +29,7 @@ export default function SelectionCard() {
   if (!sel) return null;
 
   return (
-    <div className="glass-2 animate-pop pointer-events-auto flex items-center gap-1 rounded-2xl p-1.5">
+    <div className="panel animate-pop pointer-events-auto flex items-center gap-1 rounded-2xl p-1.5">
       {/* Kind */}
       <div className="flex items-center gap-0.5 rounded-xl bg-glass p-0.5">
         {KINDS.map(([k, lbl]) => (
@@ -93,6 +93,39 @@ export default function SelectionCard() {
           </button>
         ))}
       </div>
+
+      {sel.kind !== "line" && (
+        <>
+          <Divider />
+          {/* Playback phase — lines with the same step run together */}
+          <Tip label="Play order (same number = together)" side="bottom">
+            <div className="flex items-center gap-0.5">
+              <span className="px-1 text-[10px] font-semibold uppercase tracking-wider text-faint">
+                Step
+              </span>
+              <button
+                onClick={() =>
+                  updateArrowStyle(sel.id, { step: Math.max(1, (sel.step ?? 1) - 1) })
+                }
+                aria-label="Decrease step"
+                className="grid h-7 w-7 place-items-center rounded-lg text-muted transition-colors hover:bg-glass-2 hover:text-foreground"
+              >
+                <Minus size={14} />
+              </button>
+              <span className="w-5 text-center text-sm font-bold tabular-nums">
+                {sel.step ?? 1}
+              </span>
+              <button
+                onClick={() => updateArrowStyle(sel.id, { step: (sel.step ?? 1) + 1 })}
+                aria-label="Increase step"
+                className="grid h-7 w-7 place-items-center rounded-lg text-muted transition-colors hover:bg-glass-2 hover:text-foreground"
+              >
+                <Plus size={14} />
+              </button>
+            </div>
+          </Tip>
+        </>
+      )}
 
       <Divider />
 

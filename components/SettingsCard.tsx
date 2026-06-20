@@ -13,6 +13,7 @@ import {
 import { useBoard } from "@/lib/store";
 import { FORMATION_KEYS } from "@/lib/formations";
 import { cn } from "@/lib/utils";
+import { Select } from "./ui/Select";
 
 function Switch({ on, onClick }: { on: boolean; onClick: () => void }) {
   return (
@@ -35,34 +36,6 @@ function Switch({ on, onClick }: { on: boolean; onClick: () => void }) {
   );
 }
 
-function FormationSelect({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div className="relative">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full appearance-none rounded-xl border border-line bg-glass-2 px-3 py-2 text-sm font-medium text-foreground outline-none transition-colors hover:border-line-2 focus:border-primary/60"
-      >
-        {FORMATION_KEYS.map((k) => (
-          <option key={k} value={k} className="bg-bg-2 text-foreground">
-            {k}
-          </option>
-        ))}
-      </select>
-      <ChevronDown
-        size={15}
-        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted"
-      />
-    </div>
-  );
-}
-
 function Row({ children }: { children: React.ReactNode }) {
   return <div className="flex items-center justify-between gap-3">{children}</div>;
 }
@@ -81,7 +54,7 @@ export default function SettingsCard() {
   const toggleBall = useBoard((s) => s.toggleBall);
 
   return (
-    <div className="glass pointer-events-auto w-64 overflow-hidden rounded-2xl">
+    <div className="glass pointer-events-auto w-64 rounded-2xl">
       <button
         onClick={() => setOpen((o) => !o)}
         className="flex w-full items-center gap-2 px-3.5 py-3 text-left"
@@ -105,9 +78,12 @@ export default function SettingsCard() {
               <Shirt size={12} /> Home team
               <span className="ml-auto inline-block h-2.5 w-2.5 rounded-full bg-home" />
             </div>
-            <FormationSelect
+            <Select
+              ariaLabel="Home formation"
               value={formationHome}
+              options={FORMATION_KEYS}
               onChange={(v) => applyFormation("home", v)}
+              accent="var(--color-home)"
             />
           </div>
 
@@ -124,9 +100,12 @@ export default function SettingsCard() {
                 Away team
                 <span className="ml-auto inline-block h-2.5 w-2.5 rounded-full bg-away" />
               </div>
-              <FormationSelect
+              <Select
+                ariaLabel="Away formation"
                 value={formationAway}
+                options={FORMATION_KEYS}
                 onChange={(v) => applyFormation("away", v)}
+                accent="var(--color-away)"
               />
             </div>
           )}

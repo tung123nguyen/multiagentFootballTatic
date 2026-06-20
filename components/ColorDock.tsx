@@ -14,7 +14,7 @@ export default function ColorDock() {
   if (!drawing) return null;
 
   return (
-    <div className="glass animate-pop pointer-events-auto flex items-center gap-1 rounded-2xl p-1.5">
+    <div className="panel animate-pop pointer-events-auto flex items-center gap-1 rounded-2xl p-1.5">
       {ARROW_COLORS.map((c) => (
         <button
           key={c}

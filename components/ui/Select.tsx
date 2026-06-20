@@ -65,7 +65,12 @@ export function Select({
       {open && (
         <div
           role="listbox"
-          className="glass-2 animate-pop absolute left-0 right-0 top-[calc(100%+6px)] z-50 max-h-64 overflow-y-auto rounded-xl p-1"
+          className="animate-pop absolute left-0 right-0 top-[calc(100%+6px)] z-50 max-h-64 overflow-y-auto rounded-xl border border-line-2 p-1 shadow-float"
+          style={{
+            background: "rgba(14, 19, 28, 0.98)",
+            backdropFilter: "blur(20px) saturate(150%)",
+            WebkitBackdropFilter: "blur(20px) saturate(150%)",
+          }}
         >
           {options.map((opt) => {
             const active = opt === value;

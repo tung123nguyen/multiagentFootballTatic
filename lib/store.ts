@@ -38,6 +38,10 @@ interface BoardState {
   display: DisplayMode;
   selectedId: string | null;
   selectedArrowId: string | null;
+  isPlaying: boolean;
+  playStep: number;
+  /** Player positions frozen at playback start, so lines stay static while playing. */
+  playFrozen: PlayerToken[] | null;
 
   // Actions — setup
   setTool: (t: Tool) => void;
@@ -48,6 +52,10 @@ interface BoardState {
   toggleAway: () => void;
   select: (id: string | null) => void;
   selectArrow: (id: string | null) => void;
+  setPlaying: (v: boolean) => void;
+  setPlayStep: (n: number) => void;
+  setPlayFrozen: (players: PlayerToken[] | null) => void;
+  restorePositions: (players: PlayerToken[], ball: Ball | null) => void;
 
   // Actions — tokens
   movePlayer: (id: string, x: number, y: number) => void;
@@ -65,7 +73,7 @@ interface BoardState {
   translateArrow: (id: string, dx: number, dy: number) => void;
   updateArrowStyle: (
     id: string,
-    patch: { color?: string; kind?: ArrowKind; width?: number }
+    patch: { color?: string; kind?: ArrowKind; width?: number; step?: number }
   ) => void;
 
   // Snapshot / restore
@@ -94,6 +102,9 @@ export const useBoard = create<BoardState>((set, get) => ({
   display: "number",
   selectedId: null,
   selectedArrowId: null,
+  isPlaying: false,
+  playStep: 0,
+  playFrozen: null,
 
   setTool: (t) => set({ tool: t, selectedId: null, selectedArrowId: null }),
   setColor: (c) => set({ color: c }),
@@ -127,6 +138,10 @@ export const useBoard = create<BoardState>((set, get) => ({
 
   select: (id) => set({ selectedId: id, selectedArrowId: null }),
   selectArrow: (id) => set({ selectedArrowId: id, selectedId: null }),
+  setPlaying: (v) => set({ isPlaying: v }),
+  setPlayStep: (n) => set({ playStep: n }),
+  setPlayFrozen: (players) => set({ playFrozen: players }),
+  restorePositions: (players, ball) => set({ players, ball }),
 
   movePlayer: (id, x, y) =>
     set((s) => ({

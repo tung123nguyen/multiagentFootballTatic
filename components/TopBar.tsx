@@ -3,14 +3,18 @@
 import {
   Eraser,
   FolderOpen,
+  Play,
   RotateCcw,
   Save,
+  Square,
+  StepForward,
   Undo2,
   Volleyball,
 } from "lucide-react";
 import { useBoard } from "@/lib/store";
 import { useUI } from "@/lib/ui-store";
 import { upsertLocal } from "@/lib/storage";
+import { playTactic, stepTactic, stopTactic } from "@/lib/playback";
 import { cn } from "@/lib/utils";
 import { Tip } from "./ui/Tooltip";
 
@@ -41,6 +45,8 @@ export default function TopBar() {
   const clearArrows = useBoard((s) => s.clearArrows);
   const resetBoard = useBoard((s) => s.resetBoard);
   const snapshot = useBoard((s) => s.snapshot);
+  const arrows = useBoard((s) => s.arrows);
+  const isPlaying = useBoard((s) => s.isPlaying);
 
   const name = useUI((s) => s.name);
   const setName = useUI((s) => s.setName);
@@ -52,6 +58,29 @@ export default function TopBar() {
     const t = snapshot(name.trim() || "Tactic");
     upsertLocal(t);
     flash("Saved on this device");
+  }
+
+  const hasLines = arrows.some((a) => a.kind !== "line");
+
+  function handlePlay() {
+    if (isPlaying) {
+      stopTactic();
+      return;
+    }
+    if (!hasLines) {
+      flash("Draw a Run/Pass first");
+      return;
+    }
+    playTactic();
+  }
+
+  function handleStep() {
+    if (isPlaying) return;
+    if (!hasLines) {
+      flash("Draw a Run/Pass first");
+      return;
+    }
+    stepTactic();
   }
 
   return (
@@ -92,6 +121,37 @@ export default function TopBar() {
       </div>
 
       <div className="mx-1 h-7 w-px bg-line" />
+
+      <Tip label="Play one step" side="bottom">
+        <button
+          onClick={handleStep}
+          disabled={isPlaying}
+          aria-label="Step"
+          className="grid h-9 w-9 place-items-center rounded-xl border border-line-2 bg-glass-2 text-foreground transition-colors hover:border-primary/60 disabled:opacity-40"
+        >
+          <StepForward size={16} />
+        </button>
+      </Tip>
+
+      <Tip label={isPlaying ? "Stop" : "Play all (by step)"} side="bottom">
+        <button
+          onClick={handlePlay}
+          aria-label={isPlaying ? "Stop" : "Play"}
+          className={cn(
+            "flex h-9 items-center gap-1.5 rounded-xl border px-3 text-sm font-semibold transition-all active:scale-[0.97]",
+            isPlaying
+              ? "border-away bg-away text-white"
+              : "border-line-2 bg-glass-2 text-foreground hover:border-primary/60"
+          )}
+        >
+          {isPlaying ? (
+            <Square size={14} className="fill-current" />
+          ) : (
+            <Play size={14} className="fill-current" />
+          )}
+          <span className="hidden sm:inline">{isPlaying ? "Stop" : "Play"}</span>
+        </button>
+      </Tip>
 
       <Tip label="Library" side="bottom">
         <button
